@@ -1,9 +1,11 @@
 # importing modules
 import pandas as pd
+import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.preprocessing import LabelEncoder
 from tensorflow.keras.models import load_model
 import json
+import random
 
 
 # loading trained model
@@ -14,6 +16,7 @@ training_data = pd.read_csv("dataset/training_data1.csv")
 
 # importing responses
 responses = json.load(open("dataset/responses1.json", "r"))
+#print(responses)
 
 # fitting TfIdfVectorizer with training data to preprocess inputs
 training_data["patterns"] = training_data["patterns"].str.lower()
@@ -38,13 +41,13 @@ print("Ask any queries regarding SASTRA...")
 print("I will try to understand you and reply...")
 print("Type Bye to quit...")
 while True:
-    inp = input("\nAsk anything... : ")
-    if inp == "Bye" or "bye":
+    user_input = input("\nAsk anything....: ")
+    if user_input.lower() == "bye":
         break
     else:
-        if inp:
-            tag = predict_tag(inp)
+        if user_input:
+            tag = predict_tag(user_input)
             response = random.choice(responses[tag])
-            print("Response........ : ", response)
+            print("Response........:", response)
         else:
             pass
