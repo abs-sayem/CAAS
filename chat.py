@@ -1,13 +1,12 @@
-from tune_pdf import getText
-from preprocess import cleanText
+# Greeting----------------------
+from greetings import greet
+
+# Pdf file tuning--------------------
+from pdf_tune import getPdfText, getInfoFromPdf
+from preprocess import preprocessInput
 
 file = 'dataset/divai2020_benkova.pdf'
-pdf_text = getText(file)
-cleaned_text = cleanText(pdf_text)
-
-print("Write your prompt here and hit enter. To exit from chat prompt 'bye'.\n")
-user_input = input("User: ")
-print(f"Bot : {cleaned_text[:500]}")
+pdf_text = getPdfText(file)
 
 #-------------------------------------------------------------------------------------
 # importing modules
@@ -18,6 +17,8 @@ from sklearn.preprocessing import LabelEncoder
 from tensorflow.keras.models import load_model
 import json
 import random
+import warnings
+warnings.filterwarnings("ignore")
 
 
 # loading trained model
@@ -48,21 +49,23 @@ def predict_tag(inp_str):
     return predicted_tag
 
 # Chat
-print("---------------  DemoBot1_10K - AI Chat bot  ---------------")
-print("Ask any queries regarding SASTRA...")
-print("I will try to understand you and reply...")
-print("Type Bye to quit...")
+print("---------------  DemoBot: AI Chat Bot  ---------------")
+print("Ask any queries...\nI will try to understand you and reply...\nType 'Bye' to quit.")
+
 while True:
-    user_input = input("\nAsk anything....: ")
+    user_input = input("\nUser: ")
     if user_input.lower() == "bye":
+        print("Bot : Good Bye. Have a nice day.")
         break
-    elif(user_input not in 'grettings'):
-        if user_input:
+    else:
+        # Check greetings
+        if(greet(user_input.lower())!=None):
+            print("Bot : " + greet(user_input) + "\n")
+        elif(getInfoFromPdf(pdf_text, user_input)!= None):
+            print("Bot : " + getInfoFromPdf(pdf_text, user_input) + "\n")
+        elif user_input:
             tag = predict_tag(user_input)
             response = random.choice(responses[tag])
-            print("Response........:", response)
-        else:
-            pass
-    else:
-        if user_input.lower() == "":
+            print("Bot : ", response)
+        elif user_input:
             pass
